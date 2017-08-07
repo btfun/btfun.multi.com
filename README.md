@@ -1,6 +1,8 @@
 # btfun
 
 > 前端构建
+ 结合vue官方的vue-cli,修改成多页的带express路由的cli.
+ 这是一个初始的简陋版本，待完善。 
 
 ## Build Setup
 
