@@ -39,10 +39,9 @@ module.exports = function(express, compiler){
   var util=  (res, template, param) => {
     param=param||{};
     var env='dev';
-    var templateRoot=path.join(__dirname,'..', 'server', 'views');
 
     if (env == 'dev') {
-
+//  'server/views/' 这个路径要跟 getHTMLEntry 入口文件配置相匹配
       let filename = compiler.outputPath  + 'server/views/'+template;
        //从内存中读取模板文件(webpackHtmlPlusn输出路径（注意相对路径，路径格式）)
       compiler.outputFileSystem.readFile(filename, function(err, result) {
@@ -54,12 +53,12 @@ module.exports = function(express, compiler){
           res.render('error');
           return;
         }
-        let fileInfo = path.parse(path.join(templateRoot, filename)); //载体页面路径
-        console.log('载体页面写入路径=fileInfo===',fileInfo)
-        console.log( err,'>=======result====',result)
+
+        let fileInfo = path.parse(template); //载体页面路径
 
         mkdirp(fileInfo.dir, () => {
-          var filedir=path.join(templateRoot, template)
+            //绝对路径 html文件 上级全路径  +  template 文件名
+          var filedir=path.join(__dirname,'..', fileInfo.dir, fileInfo.base)
           //创建层次文件夹后，立即创建对应的文件
           fs.writeFileSync(filedir, result);
           //渲染输出

@@ -7,7 +7,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 function getEntry(globPath) {
   var entries = {},
     basename, tmp, pathname;
-
+console.log(`${globPath}`)
   glob.sync(globPath).forEach(function (entry) {
 
 

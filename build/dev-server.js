@@ -15,12 +15,14 @@ var utils = require('./utils')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf') //加载DEV配置
 
+/**start**/
 var mkdirp = require('mkdirp');
 let fs = require('fs');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var template = require('art-template');
+/**end**/
 
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
@@ -45,7 +47,12 @@ var hotMiddleware = require('webpack-hot-middleware')(compiler, {
   log: () => {},
   heartbeat: 2000
 })
+
+/*
+* 注释这段代码
+* 会影响HTML页面的更新，手动刷新即可。否则更改 .vue文件都刷新
 // force page reload when html-webpack-plugin template changes
+**/
 compiler.plugin('compilation', function (compilation) {
   compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
     hotMiddleware.publish({ action: 'reload' })
@@ -71,23 +78,9 @@ app.use(devMiddleware)
 // compilation error display /编译错误显示
 app.use(hotMiddleware)
 
-//中间件方法  将base页面模块 其从内存中取得并存放到文件系统中。
-// app.use((req, res, next) => {
-//   let layoutPath = path.join(config.templateRoot, config.layoutTemplate);
-//   let filename = compiler.outputPath + config.layoutTemplate;
-//   //在渲染模板前需要将base页面模块 其从内存中取得并存放到文件系统中。
-//   compiler.outputFileSystem.readFile(filename, function(err, result) {
-//     let fileInfoLayout = path.parse(layoutPath);
-//
-//     console.log('fileInfoLayout',fileInfoLayout)
-//
-//     mkdirp(fileInfoLayout.dir, () => {
-//       fs.writeFileSync(layoutPath, result);
-//       next();
-//     });
-//   });
-// });
+//可添加中间件方法  将base页面模块 其从内存中取得并存放到文件系统中。
 
+/******start********/
 // 视图引擎设置
 template.config('base', '');
 template.config('extname', '.html');
@@ -105,7 +98,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'dist')));
-app.use('/', require('./dev-server-router')(express,compiler));
+app.use('/', require('./dev-server-router')(express,compiler));//DEV模式下路由
 
 
 // catch 404 and forward to error handler
@@ -124,7 +117,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
+/******end********/
 
 // serve pure static assets 服务纯静态资产
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
